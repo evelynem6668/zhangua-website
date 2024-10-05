@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>梅花易数占卦</title>
+    <style>
+        body {
+            font-family: "KaiTi", "楷体", serif;
+            text-align: center;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .outputBox {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+            font-size: 18px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+            min-width: 120px;
+        }
+        th {
+            background-color: #0ABAB5; /* Tiffany Blue for header */
+            color: white;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            outline: none;
+            transition: box-shadow 0.3s ease;
+        }
+        input:focus {
+            box-shadow: 0 0 5px #0ABAB5; /* Tiffany Blue for input focus */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #0ABAB5; /* Tiffany Blue for button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #089c93; /* Slightly darker Tiffany Blue for hover effect */
+        }
+        h1 {
+            background-color: #0ABAB5; /* Tiffany Blue for header */
+            color: white;
+            padding: 20px;
+            margin: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>梅花易数占卦</h1>
+    
+    <div class="container">
+        <input type="text" id="numberInput" placeholder="请输入一个数字">
+        <button onclick="splitAndSum()">输入</button>
+    </div>
+
+    <div class="container">
+        <div id="output" class="outputBox"></div>
+    </div>
+
+    <script>
+        function splitAndSum() {
+            let number = document.getElementById('numberInput').value;
+            if (!number) {
+                alert("请输入一个数字");
+                return;
+            }
+
+            const length = number.length;
+            let front, back;
+
+            // Split the number based on its length
+            if (length % 2 === 0) {
+                front = number.substring(0, length / 2);
+                back = number.substring(length / 2);
+            } else {
+                front = number.substring(0, Math.floor(length / 2));
+                back = number.substring(Math.floor(length / 2));
+            }
+
+            // Replace '0' with '8'
+            front = front.replace(/0/g, '8');
+            back = back.replace(/0/g, '8');
+
+            // Function to sum the digits of a string
+            function sumDigits(str) {
+                return str.split('').reduce((acc, digit) => acc + parseInt(digit), 0);
+            }
+
+            // Sum the digits of front and back
+            let sumFront = sumDigits(front);
+            let sumBack = sumDigits(back);
+            let totalSum = sumFront + sumBack;
+
+            // Calculate 动爻
+            let dongYao = totalSum % 6;
+            dongYao = dongYao === 0 ? 6 : dongYao;
+
+            // Function to assign the code based on the remainder
+            function getCode(remainder) {
+                let code;
+                switch (remainder) {
+                    case 1:
+                        code = [1, 1, 1];
+                        break;
+                    case 2:
+                        code = [0, 1, 1];
+                        break;
+                    case 3:
+                        code = [1, 0, 1];
+                        break;
+                    case 4:
+                        code = [0, 0, 1];
+                        break;
+                    case 5:
+                        code = [1, 1, 0];
+                        break;
+                    case 6:
+                        code = [0, 1, 0];
+                        break;
+                    case 7:
+                        code = [1, 0, 0];
+                        break;
+                    case 8:
+                        code = [0, 0, 0];
+                        break;
+                    default:
+                        code = [];
+                }
+                return code;
+            }
+
+            // Function to assign Ba Gua based on the code and return with 五行
+            function getBaGua(code) {
+                let gua = "";
+                let element = "";
+
+                if (code.toString() === [1, 1, 1].toString()) {
+                    gua = "乾";
+                    element = "金";
+                } else if (code.toString() === [0, 1, 1].toString()) {
+                    gua = "兑";
+                    element = "金";
+                } else if (code.toString() === [1, 0, 1].toString()) {
+                    gua = "离";
+                    element = "火";
+                } else if (code.toString() === [0, 0, 1].toString()) {
+                    gua = "震";
+                    element = "木";
+                } else if (code.toString() === [1, 1, 0].toString()) {
+                    gua = "巽";
+                    element = "木";
+                } else if (code.toString() === [0, 1, 0].toString()) {
+                    gua = "坎";
+                    element = "水";
+                } else if (code.toString() === [1, 0, 0].toString()) {
+                    gua = "艮";
+                    element = "土";
+                } else if (code.toString() === [0, 0, 0].toString()) {
+                    gua = "坤";
+                    element = "土";
+                }
+
+                return `${gua}(${element})`;
+            }
+
+            // Get the codes for front and back
+            let codeFront = getCode(sumFront % 8 === 0 ? 8 : sumFront % 8);
+            let codeBack = getCode(sumBack % 8 === 0 ? 8 : sumBack % 8);
+
+            // Combine the front and back codes into a single 6-bit code
+            let combinedCode = [...codeFront, ...codeBack];
+
+            // Generate the huGua from specific bits of the combined code
+            let huGua = [
+                combinedCode[1],  // huGua(1) = code(2)
+                combinedCode[2],  // huGua(2) = code(3)
+                combinedCode[3],  // huGua(3) = code(4)
+                combinedCode[2],  // huGua(4) = code(3)
+                combinedCode[3],  // huGua(5) = code(4)
+                combinedCode[4]   // huGua(6) = code(5)
+            ];
+
+            let huGuaShang = huGua.slice(0, 3);  // First 3 numbers
+            let huGuaXia = huGua.slice(3, 6);    // Last 3 numbers
+
+            // Get the Ba Gua for huGuaShang and huGuaXia (with 五行)
+            let huGuaShangGua = getBaGua(huGuaShang);
+            let huGuaXiaGua = getBaGua(huGuaXia);
+
+            // Get the Ba Gua for front and back (with 五行)
+            let frontGua = getBaGua(codeFront);
+            let backGua = getBaGua(codeBack);
+
+            // Copy combinedCode to create zhiGua
+            let zhiGua = [...combinedCode];
+
+            // Convert 动爻 to the appropriate index (flip the bit at the corresponding index)
+            let indexToFlip;
+            if (dongYao === 1) {
+                indexToFlip = 5;  // For 动爻 = 1, flip the 6th position
+            } else if (dongYao === 2) {
+                indexToFlip = 4;  // For 动爻 = 2, flip the 5th position
+            } else if (dongYao === 3) {
+                indexToFlip = 3;  // For 动爻 = 3, flip the 4th position
+            } else if (dongYao === 4) {
+                indexToFlip = 2;  // For 动爻 = 4, flip the 3rd position
+            } else if (dongYao === 5) {
+                indexToFlip = 1;  // For 动爻 = 5, flip the 2nd position
+            } else if (dongYao === 6) {
+                indexToFlip = 0;  // For 动爻 = 6, flip the 1st position
+            }
+
+            // Flip the bit at indexToFlip
+            zhiGua[indexToFlip] = zhiGua[indexToFlip] === 1 ? 0 : 1;
+
+            // Extract first 3 and last 3 numbers from Zhi Gua
+            let zhiGuaShang = zhiGua.slice(0, 3);
+            let zhiGuaXia = zhiGua.slice(3, 6);
+
+            // Get the Ba Gua for Zhi Gua Shang and Zhi Gua Xia (with 五行)
+            let zhiGuaShangGua = getBaGua(zhiGuaShang);
+            let zhiGuaXiaGua = getBaGua(zhiGuaXia);
+
+            // Display the output in a table
+            let outputHTML = `
+                <p><strong>动爻:</strong> ${dongYao}</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>主卦</th>
+                            <th>互卦</th>
+                            <th>之卦</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${[0, 1, 2, 3, 4, 5].map(i => `
+                        <tr>
+                            <td>${combinedCode[i]}</td>
+                            <td>${huGua[i]}</td>
+                            <td>${zhiGua[i]}</td>
+                        </tr>`).join('')}
+                        <tr>
+                            <td>${frontGua}</td>
+                            <td>${huGuaShangGua}</td>
+                            <td>${zhiGuaShangGua}</td>
+                        </tr>
+                        <tr>
+                            <td>${backGua}</td>
+                            <td>${huGuaXiaGua}</td>
+                            <td>${zhiGuaXiaGua}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('output').innerHTML = outputHTML;
+        }
+    </script>
+
+</body>
+</html>
